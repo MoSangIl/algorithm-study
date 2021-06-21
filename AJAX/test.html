@@ -1,0 +1,41 @@
+<button id="ajaxButton" type="button" onclick="makeRequest('test.xml')">Make a request</button>
+
+<script>
+    (function () {
+        var httpRequest;
+        document.getElementById("ajaxButton").onclick = makeRequest('test.xml');
+
+        function makeRequest(url) {
+            httpRequest = new XMLHttpRequest();
+
+            if (!httpRequest) {
+                alert('Giving up : (Cannot create an xMLHTTp instance');
+                return false;
+            }
+            httpRequest.onreadystatechange = alertContents;
+            httpRequest.open('GET', url);
+            httpRequest.send();
+            console.log("request send");
+        }
+
+        function alertContents() {
+            try {
+                if (httpRequest.readyState === XMLHttpRequest.DONE) {
+                    if (httpRequest.status === 200) {
+                        var xmldoc = httpRequest.responseXML;
+                        var root_node = xmldoc.getElementByTagName('root').item(0);
+                        alert(root_node.firstChild.data);
+                        // alert(httpRequest.responseText);
+                        console.log("Response Succeed");
+                    } else {
+                        alert("There was a problem with the request");
+                        console.log("Response Failed");
+                    }
+                }
+            }
+            catch (e) {
+                alert("Caught exception: " + e.description);
+            }
+        }
+    })();
+</script>

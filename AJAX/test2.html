@@ -1,0 +1,47 @@
+<label>Yout name:
+    <input type="text" id="ajaxTextbox">
+</label>
+<span id="ajaxButton" style="cursor: pointer; text-decoration: underline;">
+    Make a request
+</span>
+
+<script>
+    (function () {
+        var httpRequest;
+        document.getElementById("ajaxButton").onclick = function () {
+            var userName = document.getElementById("ajaxTextbox").value;
+            makeRequest('test.php', userName)
+        }
+        function makeRequest(url, userName) {
+            httpRequest = new XMLHttpRequest();
+
+            if (!httpRequest) {
+                alert('Giving up : (Cannot create an xMLHTTp instance');
+                return false;
+            }
+
+            httpRequest.onreadystatechange = alertContents;
+            httpRequest.open('POST', url);
+            httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            httpRequest.send('userName=' + encodeURIComponent(userName));
+        }
+        function alertContents() {
+            try {
+                if (httpRequest.readyState === XMLHttpRequest.DONE) {
+                    if (httpRequest.status === 200) {
+                        var response = JSON.parse(httpRequest.responseText);
+                        alert(response.computedString);
+                        // alert(httpRequest.responseText);
+                        console.log("Response Succeed");
+                    } else {
+                        alert("There was a problem with the request");
+                        console.log("Response Failed");
+                    }
+                }
+            }
+            catch (e) {
+                alert("Caught exception: " + e.description);
+            }
+        }
+    })();
+</script>
